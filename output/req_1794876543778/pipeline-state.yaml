@@ -1,0 +1,58 @@
+schema_version: 1
+request_id: req_1794876543778
+created_at: "2026-11-17T00:49:09Z"
+updated_at: "2026-11-17T00:49:09Z"
+
+entry_type: full_pipeline
+stage_chain: [1, 2, 3]
+
+output_docx_path: "E:\\03_Projects\\question bank\\output\\req_1794876543778\\stage3\\智能刷题系统设计开发文档.docx"
+output_docx_user_specified: false
+
+current_stage: completed
+
+stages:
+  stage_0:
+    status: completed
+    completed_at: "2026-11-17T00:49:09Z"
+    decision: full_pipeline
+
+  stage_1:
+    status: completed
+    started_at: "2026-11-17T00:49:09Z"
+    completed_at: "2026-11-17T00:50:30Z"
+    output_path: "stage1/final_draft.md"
+    genre: general
+    expert_used: general-writer
+    route_tag: general_writing
+
+  stage_2:
+    status: completed
+    started_at: "2026-11-17T00:51:00Z"
+    completed_at: "2026-11-17T00:53:30Z"
+    route: html
+    html_sub: template
+    output_path: "stage2/formatted-智能刷题系统设计开发文档.html"
+    output_format: html
+    skills_invoked: [design-token, doc-typeset, html-review]
+    design_tokens_path: "stage2/design_tokens.json"
+    fallback: false
+    fallback_reason: null
+
+  stage_3:
+    status: completed
+    started_at: "2026-11-17T00:54:00Z"
+    completed_at: "2026-11-17T00:56:00Z"
+    executor: doc-converter
+    input_format: html
+    output_path: "E:\\03_Projects\\question bank\\output\\req_1794876543778\\stage3\\智能刷题系统设计开发文档.docx"
+    skill_used: ["html-to-doc"]
+    present_files_opened: true
+    fallback: false
+    fallback_reason: null
+
+consistency_check:
+  output_files_exist: pass
+  stage_chain_complete: pass
+  last_checked_at: "2026-11-17T00:56:00Z"
+  errors: []

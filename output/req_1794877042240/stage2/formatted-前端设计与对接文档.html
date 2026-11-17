@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="docx-page-size" content="A4">
+  <title>前端设计与对接文档</title>
+  <style>
+  @page { @bottom-center { content: counter(page); } }
+  @page cover { @bottom-center { content: none; } }
+  section[role="cover"] { page: cover; }
+
+  :root {
+    --fs-h1: 20pt; --fs-h2: 14pt; --fs-body: 12pt; --fs-small: 10pt;
+    --fs-cover-kicker: 13pt; --fs-cover-title: 30pt; --fs-cover-sub: 15pt;
+    --fs-cover-meta: 11pt; --fs-toc-title: 18pt; --fs-toc-sub: 11pt;
+    --fs-table: 10.5pt; --fs-code: 10pt;
+    --ff-heading: "黑体", SimHei, sans-serif;
+    --ff-body: "宋体", SimSun, serif;
+    --ff-code: Consolas, "Courier New", monospace;
+    --lh-body: 1.6;
+    --color-text: #000000; --color-bg: #ffffff;
+    --color-line: #999999; --color-fill: #f2f2f2;
+    --spacing-xs: 0.3em; --spacing-sm: 0.5em; --spacing-md: 0.8em;
+    --spacing-lg: 1.2em; --spacing-xl: 1.6em; --spacing-xxl: 3em;
+    --margin-page: 2.5cm;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--ff-body); font-size: var(--fs-body); line-height: var(--lh-body); color: var(--color-text); background: var(--color-bg); }
+  p, li, td, th, div, span { color: var(--color-text); }
+
+  section[role="cover"].cover { display: flex; flex-direction: column; justify-content: center; min-height: 60vh; padding: var(--margin-page); }
+  .cover-kicker { font-family: var(--ff-heading); font-size: var(--fs-cover-kicker); font-weight: bold; color: var(--color-text); letter-spacing: 0.1em; margin-bottom: var(--spacing-lg); text-align: left; }
+  .cover-title { font-family: var(--ff-heading); font-size: var(--fs-cover-title); font-weight: bold; color: var(--color-text); line-height: 1.3; margin-bottom: var(--spacing-sm); text-align: left; }
+  .cover-subtitle { font-size: var(--fs-cover-sub); color: var(--color-text); margin-bottom: var(--spacing-xxl); text-align: left; }
+  .cover-rule { width: 100%; border-top: 2px solid var(--color-text); margin-bottom: var(--spacing-xl); }
+  .cover-meta p { font-size: var(--fs-cover-meta); color: var(--color-text); margin-bottom: var(--spacing-sm); text-align: left; }
+
+  .doc-toc { padding: var(--margin-page); }
+  .toc-title { font-family: var(--ff-heading); font-size: var(--fs-toc-title); font-weight: bold; color: var(--color-text); margin-bottom: var(--spacing-md); text-align: left; }
+  .toc-list, .toc-list ol, .toc-list ul { list-style: none; list-style-type: none; padding-left: 0; }
+  .toc-list > li { margin-bottom: var(--spacing-sm); }
+  .toc-list ol { padding-left: 1.8em; }
+  .toc-list ol li { margin-bottom: var(--spacing-xs); font-size: var(--fs-toc-sub); }
+  .toc-list a { color: var(--color-text); text-decoration: none; }
+
+  .body-section { padding: 0 var(--margin-page); }
+  .body-section h1 { font-family: var(--ff-heading); font-size: var(--fs-h1); font-weight: bold; color: var(--color-text); margin-top: var(--spacing-xl); margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--color-text); padding-bottom: var(--spacing-xs); }
+  .body-section h2 { font-family: var(--ff-heading); font-size: var(--fs-h2); font-weight: bold; color: var(--color-text); margin-top: var(--spacing-xl); margin-bottom: var(--spacing-sm); }
+  .body-section p { text-indent: 2em; margin-bottom: var(--spacing-md); color: var(--color-text); }
+  .body-section p.no-indent { text-indent: 0; }
+  .body-section ul, .body-section ol { margin: var(--spacing-sm) 0 var(--spacing-md) 2em; }
+  .body-section li { margin-bottom: var(--spacing-sm); color: var(--color-text); }
+
+  .lead { text-indent: 0; background: var(--color-fill); border-left: 3px solid var(--color-text); padding: var(--spacing-md); margin-bottom: var(--spacing-xl); }
+  .lead p { text-indent: 0; margin-bottom: 0; }
+
+  table.data { width: 100%; border-collapse: collapse; margin: var(--spacing-md) 0 var(--spacing-xl) 0; table-layout: fixed; }
+  table.data th, table.data td { border: 1px solid var(--color-line); padding: var(--spacing-sm) var(--spacing-md); font-size: var(--fs-table); color: var(--color-text); vertical-align: top; }
+  table.data th { background: var(--color-fill); font-family: var(--ff-heading); font-weight: bold; color: var(--color-text); text-align: left; }
+
+  pre.code { font-family: var(--ff-code); font-size: var(--fs-code); color: var(--color-text); background: var(--color-fill); border: 1px solid var(--color-line); padding: var(--spacing-md); margin: var(--spacing-sm) 0 var(--spacing-md) 0; white-space: pre-wrap; word-break: break-all; line-height: 1.45; }
+  code { font-family: var(--ff-code); color: var(--color-text); }
+  strong, b { color: var(--color-text); }
+  .note { text-indent: 0; font-size: var(--fs-small); color: var(--color-text); border-top: 1px solid var(--color-line); margin-top: var(--spacing-xl); padding-top: var(--spacing-md); }
+  </style>
+</head>
+<body>
+
+  <section role="cover" class="cover">
+    <p class="cover-kicker">前端模块 · 设计与对接文档 · 讨论稿</p>
+    <p class="cover-title">智能刷题系统前端设计与对接文档</p>
+    <p class="cover-subtitle">页面设计、组件拆分、状态管理与后端接口对接方案</p>
+    <div class="cover-rule"></div>
+    <div class="cover-meta">
+      <p>项目：智能刷题系统</p>
+      <p>版本：V1.0（讨论稿）</p>
+      <p>编写日期：2026-11-17　负责人：前端模块</p>
+    </div>
+  </section>
+
+  <section role="cover">
+    <nav class="doc-toc" aria-label="文档目录">
+      <p class="toc-title">目录</p>
+      <ol class="toc-list">
+        <li><a href="#s1">一、前端职责与范围</a>
+          <ol><li><a href="#s1-1">1.1 做什么</a></li><li><a href="#s1-2">1.2 暂不做什么</a></li><li><a href="#s1-3">1.3 前端在系统中的位置</a></li></ol>
+        </li>
+        <li><a href="#s2">二、技术选型与工程结构</a>
+          <ol><li><a href="#s2-1">2.1 选型</a></li><li><a href="#s2-2">2.2 目录结构</a></li></ol>
+        </li>
+        <li><a href="#s3">三、页面设计与路由</a>
+          <ol><li><a href="#s3-1">3.1 路由表</a></li><li><a href="#s3-2">3.2 页面间流转</a></li><li><a href="#s3-3">3.3 各页面关键设计点</a></li></ol>
+        </li>
+        <li><a href="#s4">四、核心组件设计</a>
+          <ol><li><a href="#s4-1">4.1 TreeNode 递归树节点</a></li><li><a href="#s4-2">4.2 ProgressBar 进度条</a></li><li><a href="#s4-3">4.3 QuestionCard 单题卡片</a></li></ol>
+        </li>
+        <li><a href="#s5">五、状态管理</a></li>
+        <li><a href="#s6">六、样式与设计 token</a></li>
+        <li><a href="#s7">七、与后端对接（重点）</a>
+          <ol>
+            <li><a href="#s7-1">7.1 对接总原则</a></li><li><a href="#s7-2">7.2 接口清单</a></li>
+            <li><a href="#s7-3">7.3 数据格式约定</a></li><li><a href="#s7-4">7.4 调用时序</a></li>
+            <li><a href="#s7-5">7.5 mock 到真实接口的切换</a></li><li><a href="#s7-6">7.6 异常处理与边界</a></li>
+          </ol>
+        </li>
+        <li><a href="#s8">八、与后端的联调流程</a></li>
+        <li><a href="#s9">九、阶段实施计划</a></li>
+        <li><a href="#s10">十、待确认事项清单</a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <section role="body" class="body-section" data-page-restart="1">
+    <div class="lead">
+      <p>本文档只讲前端两件事：<strong>一是前端怎么设计</strong>（技术选型、页面结构、组件拆分、状态与样式），<strong>二是前端怎么和后端对接</strong>（接口清单、数据格式、调用时序、mock 切换、联调与异常处理）。业务背景与整体分工见《智能刷题系统设计与开发文档》。文中凡标注"【待确认】"处需与后端或团队约定后确定。</p>
+    </div>
+
+    <h1 id="s1">一、前端职责与范围</h1>
+    <h2 id="s1-1">1.1 做什么</h2>
+    <p>前端负责"树状刷题界面"这一整块，具体包括四个页面：</p>
+    <ol>
+      <li><strong>知识地图（首页）</strong>：三级知识树，可折叠展开，节点带进度条与掌握状态；</li>
+      <li><strong>题集列表页</strong>：某知识点下的题目列表，含完成度、作答状态、重置；</li>
+      <li><strong>单题作答页</strong>：单选/多选/填空三种题型的作答、提交判分、查看解析；</li>
+      <li><strong>诊断报告页</strong>：模拟测试后以红绿标记薄弱与已掌握知识点，可一键跳到薄弱题集。</li>
+    </ol>
+    <h2 id="s1-2">1.2 暂不做什么</h2>
+    <p>按会议要求，<strong>登录、个人信息、做题记录</strong>三类界面第一阶段不开发。这意味着前端第一阶段<strong>不需要处理用户身份与鉴权</strong>，所有接口默认面向单个当前用户；若后端接口要求 token，需另行确认。【待确认】</p>
+    <h2 id="s1-3">1.3 前端在系统中的位置</h2>
+    <p>数据流是单向的：后端返回 JSON → 前端存到本地状态 → 渲染界面；用户操作 → 前端组装请求 → 调后端接口 → 更新本地状态 → 界面刷新。前端<strong>不做判分、不做 AI 解析、不直接读数据库</strong>，只负责展示与交互，判分与解析结果都来自后端。</p>
+
+    <h1 id="s2">二、技术选型与工程结构</h1>
+    <h2 id="s2-1">2.1 选型</h2>
+    <table class="data">
+      <thead><tr><th>层面</th><th>选型</th><th>理由</th></tr></thead>
+      <tbody>
+        <tr><td>框架</td><td>Vue 3（组合式 API）</td><td>递归组件天然适合渲染无限层级知识树；改数据界面自动更新，省去大量手动 DOM 操作；国内资料多，上手快</td></tr>
+        <tr><td>构建</td><td>Vite</td><td>启动快、配置少，npm run dev 即可开发</td></tr>
+        <tr><td>路由</td><td>Vue Router（hash 模式）</td><td>四个页面跳转；hash 模式避免静态部署刷新 404</td></tr>
+        <tr><td>HTTP</td><td>fetch 或 axios</td><td>调后端接口；原生 fetch 零依赖，axios 拦截更方便，二选一</td></tr>
+        <tr><td>样式</td><td>原生 CSS + CSS 变量</td><td>不引 UI 组件库，避免通用后台观感，配色 token 集中管理</td></tr>
+      </tbody>
+    </table>
+    <h2 id="s2-2">2.2 目录结构</h2>
+    <pre class="code">src/
+├─ api/                 接口层：每个接口一个函数，集中管理 URL 与请求
+│  ├─ request.js        统一封装 fetch（baseURL、错误、loading）
+│  └─ knowledge.js      知识树/题集/题目/判分/诊断接口
+├─ views/               页面组件（4 个）
+│  ├─ KnowledgeMap.vue / QuestionSet.vue
+│  ├─ QuestionDetail.vue / Diagnostic.vue
+├─ components/          复用组件（3 个核心）
+│  ├─ TreeNode.vue      递归树节点
+│  ├─ ProgressBar.vue   进度条
+│  └─ QuestionCard.vue  单题卡片（按题型切换控件）
+├─ router/index.js      路由表
+├─ mock/data.js         模拟数据（接口就绪前的假数据）
+├─ styles/global.css    全局样式与设计 token
+└─ main.js</pre>
+    <p><strong>分层原则</strong>：页面只管布局与业务流程，接口调用集中在 api/，视图里不出现裸 URL。这样后端改地址时只改一处。</p>
+
+    <h1 id="s3">三、页面设计与路由</h1>
+    <h2 id="s3-1">3.1 路由表</h2>
+    <table class="data">
+      <thead><tr><th>路径</th><th>页面</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>/</td><td>KnowledgeMap</td><td>知识地图首页</td></tr>
+        <tr><td>/set/:id</td><td>QuestionSet</td><td>题集列表，:id 为题集 id</td></tr>
+        <tr><td>/question/:setId/:qid</td><td>QuestionDetail</td><td>单题作答，带题集 id 与题目 id 便于返回</td></tr>
+        <tr><td>/diagnostic</td><td>Diagnostic</td><td>诊断报告</td></tr>
+      </tbody>
+    </table>
+    <h2 id="s3-2">3.2 页面间流转</h2>
+    <p>首页点知识点 → 题集列表 → 点某题 → 作答页 → 提交看到解析 → 下一题；题集列表可返回首页；诊断页可从首页进入，点"去练习"跳到薄弱知识点题集。</p>
+    <h2 id="s3-3">3.3 各页面关键设计点</h2>
+    <p><strong>知识地图</strong>：递归渲染三级树；节点显示名称、进度条、掌握状态色；章节可折叠，叶子可点击进题集；提供"全部展开/收起"。默认展开前两级，避免一上来信息过密。</p>
+    <p><strong>题集列表</strong>：顶部显示完成度进度条与重置按钮；每题一行，标记状态（已答对/答错/作答中/未做）与题型徽章。</p>
+    <p><strong>单题作答</strong>：核心是 QuestionCard 按 type 切换控件——单选渲染圆形选项、多选渲染方框选项、填空渲染输入框；提交后显示正误与解析区，解析区带"AI 双模型比对一致"标识。</p>
+    <p><strong>诊断报告</strong>：分薄弱/已掌握两栏，各知识点显示正确率进度条；薄弱项提供"去练习"按钮跳对应题集。</p>
+
+    <h1 id="s4">四、核心组件设计</h1>
+    <h2 id="s4-1">4.1 TreeNode（递归树节点）</h2>
+    <p>整个前端技术含量最高的组件。思路是<strong>组件在自己模板里调用自己</strong>：一个节点渲染自身（名称、进度条、状态点），若有子节点则递归渲染 TreeNode。折叠/展开用一个布尔状态控制子节点容器是否渲染。</p>
+    <p>关键 props：node（当前节点数据）、isRoot（是否根）、expandCtrl（父级下发的展开/收起指令）。点击行为：有子节点则切换展开；叶子则跳转到对应题集。三级连线用 CSS 边框 + 圆角实现，无需引图表库。</p>
+    <h2 id="s4-2">4.2 ProgressBar（进度条）</h2>
+    <p>props：value（0-100）、status（mastered/weak/learning/untouched）、showLabel。颜色随 status 变化：绿=掌握、红=薄弱、深绿=学习中、灰=未开始。宽度用 transition 做平滑动画。</p>
+    <h2 id="s4-3">4.3 QuestionCard（单题卡片）</h2>
+    <p>按题型切换的核心组件。内部维护：选中项 selected（单选/多选）、输入值 blankInput（填空）、是否已提交 submitted。</p>
+    <p>判分逻辑（前端先做本地判断，最终以后端返回为准）：</p>
+    <ul>
+      <li>单选：选中项等于答案；</li>
+      <li>多选：选中项集合与答案集合排序后完全一致；</li>
+      <li>填空：输入与答案忽略大小写后相等。</li>
+    </ul>
+    <p>提交后高亮正确答案与错误选择，展示解析。切换题目时重置所有状态。</p>
+
+    <h1 id="s5">五、状态管理</h1>
+    <p>第一阶段页面少、状态简单，<strong>用组件本地状态（Vue 的 ref/reactive）即可，暂不引入 Pinia</strong>。各状态归属：</p>
+    <table class="data">
+      <thead><tr><th>状态</th><th>存放位置</th><th>来源</th></tr></thead>
+      <tbody>
+        <tr><td>知识树数据</td><td>KnowledgeMap</td><td>接口 GET 知识树</td></tr>
+        <tr><td>展开/收起</td><td>TreeNode 本地</td><td>用户点击</td></tr>
+        <tr><td>题集列表、完成度</td><td>QuestionSet</td><td>接口 GET 题集</td></tr>
+        <tr><td>当前题目、选中答案、是否提交</td><td>QuestionCard 本地</td><td>接口 GET 题目 + 用户输入</td></tr>
+        <tr><td>判分结果、解析</td><td>QuestionCard</td><td>接口 POST 判分返回</td></tr>
+        <tr><td>诊断数据</td><td>Diagnostic</td><td>接口 GET 诊断</td></tr>
+      </tbody>
+    </table>
+    <p>原则：能从后端拿的不放死在前端；用户操作产生的临时状态放组件本地。</p>
+
+    <h1 id="s6">六、样式与设计 token</h1>
+    <p>全局 CSS 变量集中定义：<strong>暖灰纸底 #f7f6f2、青绿主色 #0f6e56、朱红警示 #d85a30、近黑文字 #2c2c2a</strong>；衬线体大标题 + 无衬线正文。红绿语义严格对应会议要求（红=薄弱，绿=掌握）。注意：这是网页 UI 配色；导出到 Word 的文档则遵循全黑文字规则，两者场景不同，不冲突。</p>
+
+    <h1 id="s7">七、与后端对接（重点）</h1>
+    <h2 id="s7-1">7.1 对接总原则</h2>
+    <ol>
+      <li><strong>契约先行</strong>：后端按约定格式返回，前端按约定格式渲染；字段一旦定下，双方都不要单方面改。</li>
+      <li><strong>集中管理</strong>：所有 URL 写在 api/ 一处，配一个 baseURL；后端地址变化只改一处。</li>
+      <li><strong>mock 先行</strong>：接口没就绪时读本地 mock，视图代码不变；接口就绪后把数据源从 mock 换成接口函数即可。</li>
+      <li><strong>前端不做判分</strong>：提交答案后判分结果、正确答案、解析全部由后端返回，前端只负责显示。</li>
+    </ol>
+
+    <h2 id="s7-2">7.2 接口清单（建议，需与后端确认）</h2>
+    <table class="data">
+      <thead><tr><th>编号</th><th>用途</th><th>方法</th><th>路径</th><th>调用时机</th></tr></thead>
+      <tbody>
+        <tr><td>A1</td><td>获取知识树</td><td>GET</td><td>/api/knowledge-tree</td><td>进入首页</td></tr>
+        <tr><td>A2</td><td>获取题集列表</td><td>GET</td><td>/api/sets/{setId}</td><td>进入题集页</td></tr>
+        <tr><td>A3</td><td>获取单题详情</td><td>GET</td><td>/api/questions/{questionId}</td><td>进入作答页 / 切题</td></tr>
+        <tr><td>A4</td><td>提交判分</td><td>POST</td><td>/api/answers/submit</td><td>点"提交答案"</td></tr>
+        <tr><td>A5</td><td>重置题集进度</td><td>POST</td><td>/api/sets/{setId}/reset</td><td>点"重置"</td></tr>
+        <tr><td>A6</td><td>获取诊断报告</td><td>GET</td><td>/api/diagnostic</td><td>进入诊断页</td></tr>
+        <tr><td>A7</td><td>按考纲组卷</td><td>POST</td><td>/api/papers/generate</td><td>阶段二模拟测试</td></tr>
+      </tbody>
+    </table>
+    <p class="no-indent">路径前缀、是否带版本（如 /api/v1）、鉴权方式均【待确认】。</p>
+
+    <h2 id="s7-3">7.3 数据格式约定</h2>
+    <p><strong>A1 知识树响应</strong>：返回整棵树，节点结构如下。</p>
+    <pre class="code">{
+  "id": "ch2", "name": "数据结构与算法", "parentId": "c1",
+  "level": 2,              // 1课程 2章节 3知识点
+  "progress": 38,          // 0-100
+  "status": "learning",    // mastered/weak/learning/untouched
+  "setId": null,           // 叶子节点挂题集 id
+  "children": [ ... ]      // 子节点，递归
+}</pre>
+    <p><strong>A2 题集列表响应</strong>：</p>
+    <pre class="code">{
+  "setId": "s6", "knowledgeName": "栈与队列",
+  "counts": { "single": 8, "multiple": 2, "blank": 2 },
+  "done": 4, "total": 12,
+  "questions": [
+    { "id": "q1", "stem": "栈的特点是（ ）。", "type": "single", "status": "correct" }
+  ]
+}</pre>
+    <p><strong>A3 单题详情响应</strong>：</p>
+    <pre class="code">{
+  "id": "q1", "type": "single",       // single/multiple/blank
+  "stem": "栈的特点是（ ）。",
+  "options": [                        // 填空题此项为空数组
+    { "key": "A", "text": "先进先出" },
+    { "key": "B", "text": "先进后出" }
+  ],
+  "answer": "B"   // 单选字符串；多选数组如 ["A","B"]；填空字符串
+}</pre>
+    <p class="no-indent">注意：<strong>作答前是否下发 answer</strong>【待确认】。若不下发，前端提交后只显示后端返回的正误与解析，不显示"正确答案"高亮；若下发，前端可本地高亮。建议作答阶段不下发，避免答案暴露在前端。</p>
+    <p><strong>A4 提交判分请求/响应</strong>：</p>
+    <pre class="code">请求：{ "questionId": "q1", "setId": "s6", "userAnswer": "B" }
+       （多选 userAnswer 为数组，填空为字符串）
+响应：{
+  "correct": true, "correctAnswer": "B",
+  "analysis": "栈是先进后出的线性表……"
+}</pre>
+    <p><strong>A6 诊断报告响应</strong>：</p>
+    <pre class="code">{
+  "score": 68, "total": 100, "duration": 42,
+  "weakPoints":    [ { "id": "k6", "name": "栈与队列", "accuracy": 35, "setId": "s6" } ],
+  "masteredPoints":[ { "id": "k1", "name": "计算机发展", "accuracy": 92 } ]
+}</pre>
+    <p class="no-indent">诊断项直接带 setId，前端"去练习"按钮可直接跳转，无需再映射。【待确认】</p>
+
+    <h2 id="s7-4">7.4 调用时序（一个完整作答流程）</h2>
+    <ol>
+      <li>进首页 → 调 A1 拿知识树 → 渲染；</li>
+      <li>点知识点 → 路由跳题集页 → 调 A2 拿题集 → 渲染列表与完成度；</li>
+      <li>点某题 → 作答页 → 调 A3 拿题目 → 渲染控件；</li>
+      <li>用户作答 → 点提交 → 调 A4 → 拿到 correct/analysis → 高亮并显示解析；</li>
+      <li>点下一题 → 用新题目 id 重复第 3 步（组件内部重置状态）；</li>
+      <li>点重置 → 调 A5 → 刷新题集进度。</li>
+    </ol>
+
+    <h2 id="s7-5">7.5 mock 到真实接口的切换</h2>
+    <p>第一阶段用 mock/data.js 提供假数据，函数签名与接口函数保持一致（如 getKnowledgeTree()、getQuestionSet(id)）。切换方式：把视图里 import 的来源从 mock/data 改为 api/knowledge，其余代码不动。建议加一个开关变量 USE_MOCK，方便随时切换演示。</p>
+
+    <h2 id="s7-6">7.6 异常处理与边界</h2>
+    <ul>
+      <li><strong>加载态</strong>：每个页面首次请求显示"加载中"，避免白屏。</li>
+      <li><strong>失败重试</strong>：请求失败显示错误提示 + 重试按钮，不静默失败。</li>
+      <li><strong>空状态</strong>：题集为空、诊断无数据时显示友好提示，而非空白。</li>
+      <li><strong>并发与防抖</strong>：提交按钮在请求返回前置灰，防重复提交。</li>
+      <li><strong>数据兜底</strong>：后端字段缺失时给默认值（如 progress 缺失按 0），避免渲染报错。</li>
+      <li><strong>题型扩展</strong>：若题型从三种增加，QuestionCard 需新增控件分支——这也是题型必须尽早定死的原因。</li>
+    </ul>
+
+    <h1 id="s8">八、与后端的联调流程</h1>
+    <ol>
+      <li><strong>定契约</strong>：双方确认第七章的接口路径与字段，冻结 mock 数据结构；</li>
+      <li><strong>并行开发</strong>：前端用 mock 跑通界面，后端实现接口，互不阻塞；</li>
+      <li><strong>接口联调</strong>：后端给测试地址，前端关掉 mock 逐个接口替换，用浏览器开发者工具检查请求/响应；</li>
+      <li><strong>走查主链路</strong>：按 7.4 时序完整走一遍"首页→题集→作答→判分→诊断"；</li>
+      <li><strong>问题反馈</strong>：字段不符、状态不对统一记录，后端修接口或前端调适配层。</li>
+    </ol>
+
+    <h1 id="s9">九、阶段实施计划</h1>
+    <table class="data">
+      <thead><tr><th>阶段</th><th>前端交付</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td>阶段一</td><td>四页面 + 三组件，用 mock 跑通主链路</td><td>无（可独立开发）</td></tr>
+        <tr><td>阶段二</td><td>接真实接口，替换 mock，打通判分与进度回写</td><td>后端 A1-A5 就绪</td></tr>
+        <tr><td>阶段三</td><td>诊断页与薄弱点补漏闭环细化</td><td>后端 A6 就绪</td></tr>
+        <tr><td>阶段四</td><td>适配小程序</td><td>网页版稳定后</td></tr>
+      </tbody>
+    </table>
+
+    <h1 id="s10">十、待确认事项清单</h1>
+    <ol>
+      <li><strong>题型数量</strong>：三种（单选/多选/填空）还是两类？直接决定 QuestionCard 控件与判分逻辑，最优先。</li>
+      <li><strong>接口前缀与鉴权</strong>：是否有 /api/v1 前缀？是否需要 token？（因登录页暂缓，倾向第一阶段无鉴权）</li>
+      <li><strong>答案是否下发</strong>：作答阶段 A3 是否返回 answer？建议不下发。</li>
+      <li><strong>诊断项是否带 setId</strong>：决定"去练习"跳转是否需要前端映射。</li>
+      <li><strong>进度回写时机</strong>：答完每题即回写，还是整集提交后回写？影响 A5 与完成度计算。</li>
+      <li><strong>HTTP 库</strong>：原生 fetch 还是 axios？建议 axios（拦截器处理错误与 loading 更省心）。</li>
+    </ol>
+
+    <p class="note">请后端同学重点确认第七章接口清单与数据格式，确认后即可冻结契约、并行开发。</p>
+  </section>
+
+</body>
+</html>

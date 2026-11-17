@@ -1,0 +1,18 @@
+# 依赖（用 npm install 恢复即可）
+node_modules/
+
+# 构建产物（源码在，随时可重新 build）
+dist/
+
+# 本地工作数据
+.workbuddy/
+
+# 日志
+*.log
+npm-debug.log*
+
+# 编辑器 / 系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

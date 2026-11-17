@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="docx-page-size" content="A4">
+  <title>智能刷题系统设计开发文档</title>
+  <style>
+  @page { @bottom-center { content: counter(page); } }
+  @page cover { @bottom-center { content: none; } }
+  section[role="cover"] { page: cover; }
+
+  :root {
+    --fs-h1: 20pt;
+    --fs-h2: 14pt;
+    --fs-h3: 12pt;
+    --fs-body: 12pt;
+    --fs-small: 10pt;
+    --fs-cover-kicker: 13pt;
+    --fs-cover-title: 30pt;
+    --fs-cover-sub: 15pt;
+    --fs-cover-meta: 11pt;
+    --fs-toc-title: 18pt;
+    --fs-toc-sub: 11pt;
+    --fs-table: 11pt;
+    --ff-heading: "黑体", SimHei, sans-serif;
+    --ff-body: "宋体", SimSun, serif;
+    --ff-code: Consolas, "Courier New", monospace;
+    --lh-body: 1.6;
+    --color-text: #000000;
+    --color-bg: #ffffff;
+    --color-line: #999999;
+    --color-fill: #f2f2f2;
+    --spacing-xs: 0.3em;
+    --spacing-sm: 0.5em;
+    --spacing-md: 0.8em;
+    --spacing-lg: 1.2em;
+    --spacing-xl: 1.6em;
+    --spacing-xxl: 3em;
+    --margin-page: 2.5cm;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--ff-body);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+  }
+  p, li, td, th, div, span { color: var(--color-text); }
+
+  section[role="cover"].cover {
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: 60vh; padding: var(--margin-page);
+  }
+  .cover-kicker { font-family: var(--ff-heading); font-size: var(--fs-cover-kicker); font-weight: bold; color: var(--color-text); letter-spacing: 0.1em; margin-bottom: var(--spacing-lg); text-align: left; }
+  .cover-title { font-family: var(--ff-heading); font-size: var(--fs-cover-title); font-weight: bold; color: var(--color-text); line-height: 1.3; margin-bottom: var(--spacing-sm); text-align: left; }
+  .cover-subtitle { font-size: var(--fs-cover-sub); color: var(--color-text); margin-bottom: var(--spacing-xxl); text-align: left; }
+  .cover-rule { width: 100%; border-top: 2px solid var(--color-text); margin-bottom: var(--spacing-xl); }
+  .cover-meta p { font-size: var(--fs-cover-meta); color: var(--color-text); margin-bottom: var(--spacing-sm); text-align: left; }
+
+  .doc-toc { padding: var(--margin-page); }
+  .toc-title { font-family: var(--ff-heading); font-size: var(--fs-toc-title); font-weight: bold; color: var(--color-text); margin-bottom: var(--spacing-md); text-align: left; }
+  .toc-list, .toc-list ol, .toc-list ul { list-style: none; list-style-type: none; padding-left: 0; }
+  .toc-list > li { margin-bottom: var(--spacing-sm); }
+  .toc-list ol { padding-left: 1.8em; }
+  .toc-list ol li { margin-bottom: var(--spacing-xs); font-size: var(--fs-toc-sub); }
+  .toc-list a { color: var(--color-text); text-decoration: none; }
+
+  .body-section { padding: 0 var(--margin-page); }
+  .body-section h1 {
+    font-family: var(--ff-heading); font-size: var(--fs-h1); font-weight: bold;
+    color: var(--color-text); margin-top: var(--spacing-xl); margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-text); padding-bottom: var(--spacing-xs);
+  }
+  .body-section h2 {
+    font-family: var(--ff-heading); font-size: var(--fs-h2); font-weight: bold;
+    color: var(--color-text); margin-top: var(--spacing-xl); margin-bottom: var(--spacing-sm);
+  }
+  .body-section p { text-indent: 2em; margin-bottom: var(--spacing-md); color: var(--color-text); }
+  .body-section p.no-indent { text-indent: 0; }
+  .body-section ul, .body-section ol { margin: var(--spacing-sm) 0 var(--spacing-md) 2em; }
+  .body-section li { margin-bottom: var(--spacing-sm); color: var(--color-text); }
+
+  .lead { text-indent: 0; background: var(--color-fill); border-left: 3px solid var(--color-text); padding: var(--spacing-md) var(--spacing-md); margin-bottom: var(--spacing-xl); }
+  .lead p { text-indent: 0; margin-bottom: 0; }
+
+  table.data { width: 100%; border-collapse: collapse; margin: var(--spacing-md) 0 var(--spacing-xl) 0; table-layout: fixed; }
+  table.data th, table.data td { border: 1px solid var(--color-line); padding: var(--spacing-sm) var(--spacing-md); font-size: var(--fs-table); color: var(--color-text); vertical-align: top; }
+  table.data th { background: var(--color-fill); font-family: var(--ff-heading); font-weight: bold; color: var(--color-text); text-align: left; }
+
+  code { font-family: var(--ff-code); color: var(--color-text); }
+  strong, b { color: var(--color-text); }
+  .note { text-indent: 0; font-size: var(--fs-small); color: var(--color-text); border-top: 1px solid var(--color-line); margin-top: var(--spacing-xl); padding-top: var(--spacing-md); }
+  </style>
+</head>
+<body>
+
+  <section role="cover" class="cover">
+    <p class="cover-kicker">项目开发文档 · 讨论稿</p>
+    <p class="cover-title">智能刷题系统设计与开发文档</p>
+    <p class="cover-subtitle">面向专升本备考人群的个性化刷题与查漏补缺系统</p>
+    <div class="cover-rule"></div>
+    <div class="cover-meta">
+      <p>版本：V1.0（讨论稿）</p>
+      <p>编写日期：2026-11-17</p>
+      <p>状态：待团队讨论确认</p>
+    </div>
+  </section>
+
+  <section role="cover">
+    <nav class="doc-toc" aria-label="文档目录">
+      <p class="toc-title">目录</p>
+      <ol class="toc-list">
+        <li><a href="#section-1">一、项目定位与目标</a></li>
+        <li><a href="#section-2">二、用户分层与核心刷题路径</a></li>
+        <li><a href="#section-3">三、团队分工与开发模式</a></li>
+        <li><a href="#section-4">四、数据库设计（双核结构）</a>
+          <ol>
+            <li><a href="#section-4-1">4.1 题库信息表（静态内核）</a></li>
+            <li><a href="#section-4-2">4.2 用户状态表（动态）</a></li>
+          </ol>
+        </li>
+        <li><a href="#section-5">五、前端界面设计</a>
+          <ol>
+            <li><a href="#section-5-1">5.1 设计基准：知识树</a></li>
+            <li><a href="#section-5-2">5.2 页面清单与交互链路</a></li>
+            <li><a href="#section-5-3">5.3 视觉风格</a></li>
+          </ol>
+        </li>
+        <li><a href="#section-6">六、题库接口与抽题规则</a></li>
+        <li><a href="#section-7">七、AI 接口与题目解析</a></li>
+        <li><a href="#section-8">八、前后端接口数据约定（建议）</a></li>
+        <li><a href="#section-9">九、开发阶段规划</a></li>
+        <li><a href="#section-10">十、待确认事项与风险</a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <section role="body" class="body-section" data-page-restart="1">
+    <div class="lead">
+      <p>本文档依据两次项目会议纪要、《智能刷题系统设计方案概要》以及老师提供的知识树示意图整理而成，目的是把各方对项目的理解统一到同一份文字上，供团队讨论确认后再分工开发。文中凡标注"【待确认】"处，均为原始材料中存在分歧或尚未明确的事项，需要团队拍板。</p>
+    </div>
+
+    <h1 id="section-1">一、项目定位与目标</h1>
+    <p>开发一套面向专升本备考人群的智能刷题系统。核心目标是"<strong>快速诊断薄弱点 + 精准查漏补缺</strong>"：通过 AI 算法实现个性化题目推荐，让学生把有限复习时间集中在最薄弱的知识点上。</p>
+    <p>系统采用<strong>次第迭代</strong>的学习机制：学生刷完题目后，系统更新其知识点掌握情况，生成学习报告，再据此推送下一轮练习，形成"做题 → 诊断 → 再练习"的闭环。</p>
+    <p>项目按阶段推进，<strong>先做网页版，网页版稳定后再做小程序版</strong>；每完成一个阶段发放相应补助，根据实际进度提供支持。开发流程坚持"<strong>先文档、后开发</strong>"——本文档即为此环节产物。</p>
+
+    <h1 id="section-2">二、用户分层与核心刷题路径</h1>
+    <p>系统面向两类用户，需分别设计刷题路径：</p>
+    <table class="data">
+      <thead><tr><th>用户类型</th><th>核心诉求</th><th>刷题路径</th></tr></thead>
+      <tbody>
+      <tr><td>学习型用户</td><td>从头系统学习，尚未进入复习状态</td><td>按课程知识点树状结构逐章推进，章节末设综合测试，据此判断薄弱点并决定下一章进度</td></tr>
+      <tr><td>模拟测试型用户</td><td>考前冲刺、查漏补缺</td><td>直接作答完整综合试卷进行摸底，结束后生成诊断报告指出薄弱知识点，供针对性补漏</td></tr>
+      </tbody>
+    </table>
+    <p>两条路径最终汇合到同一套题集与作答逻辑，区别只在"入口"和"组卷方式"：学习型按知识点顺序抽题，模拟测试型按考纲分数比例随机组卷。</p>
+
+    <h1 id="section-3">三、团队分工与开发模式</h1>
+    <ul>
+      <li>团队共 <strong>6 名同学</strong>，按三大模块<strong>各分 2 人自由组队</strong>协作。</li>
+      <li><strong>小唐</strong>负责把控进度、分配任务，并在开发前整理本开发文档发群供讨论确认。</li>
+      <li>后端统一使用 <strong>Python</strong>。相比 Java 虽然效率略逊，但代码简单、上手快、外部服务（尤其 AI 接口）生态成熟。</li>
+    </ul>
+    <p class="no-indent">三大核心任务模块：</p>
+    <ol>
+      <li><strong>题库设计与数据准备</strong>（建库、题型定义、知识点标记、题库扩充）；</li>
+      <li><strong>前端树状刷题界面</strong>（知识树、题集、作答、诊断，本人负责部分）；</li>
+      <li><strong>AI 接口与题目解析</strong>（对接大模型、生成并比对解析）。</li>
+    </ol>
+
+    <h1 id="section-4">四、数据库设计（双核结构）</h1>
+    <p>数据库是项目基础，采用"一静一动"双核设计。</p>
+
+    <h2 id="section-4-1">4.1 题库信息表（静态内核）</h2>
+    <p>作为后台不动的基础库，存储：题干、选项、答案、关联知识点、题目解析。</p>
+    <ul>
+      <li><strong>题型</strong>：【待确认】原始材料存在分歧——会议纪要写"单选题、多选题、填空题"三种；设计概要写"选择题和填空题"两类客观题。本方案<strong>暂按三种（单选/多选/填空）</strong>设计，理由是覆盖会议口径且均为客观题、便于 AI 判卷与即时反馈。<strong>此点须团队尽快确认</strong>，因为它直接影响选项组件与判分逻辑。</li>
+      <li>确保所有题目具备<strong>明确的标准答案</strong>，便于系统自动判分与学生即时查看。</li>
+      <li>题目按知识点字段归类。现有题目的知识点字段先空出，由负责人利用思维导图统一标记。</li>
+      <li>需购买专升本计算机专业三年制考纲及复习资料，用于扩充当前可能过时的题库。</li>
+    </ul>
+
+    <h2 id="section-4-2">4.2 用户状态表（动态）</h2>
+    <p>记录：用户个人信息、当前学习进度、历史答题对错、知识点掌握度统计。该表是 AI 精准推荐与下次练习推送的数据依据。</p>
+
+    <h1 id="section-5">五、前端界面设计</h1>
+
+    <h2 id="section-5-1">5.1 设计基准：知识树</h2>
+    <p>前端的核心难点是"<strong>课程 → 知识点 → 题目</strong>"多层级树状结构，需支持折叠展开以提升美观度。老师提供的示意图为横向思维导图样式：根节点在左、曲线向右展开、带描边的圆角节点、主题/副主题分层。前端据此设计为三级树：</p>
+    <ul>
+      <li><strong>第一级</strong>：课程（根，如"专升本计算机基础"）；</li>
+      <li><strong>第二级</strong>：章节（如"数据结构与算法"）；</li>
+      <li><strong>第三级</strong>：知识点（叶子，如"栈与队列"），其下挂载题集链接。</li>
+    </ul>
+    <p>节点上直接呈现做题进度条与掌握状态，颜色语义统一为：<strong>绿色=已掌握，红色=薄弱，灰色=未开始</strong>。这样把"每个节点显示进度条"与"红绿标记薄弱/已掌握知识点"两项需求合并到一个组件中。</p>
+
+    <h2 id="section-5-2">5.2 页面清单与交互链路</h2>
+    <p>前端第一阶段聚焦以下页面，登录、个人信息、做题记录等界面<strong>暂不开发</strong>：</p>
+    <ol>
+      <li><strong>知识地图（首页）</strong>：三级知识树，可折叠展开、全部展开/收起；点击叶子知识点进入对应题集。</li>
+      <li><strong>题集列表页</strong>：展示某知识点下的题目、题型分布、完成度进度条与重置按钮；题目按"已答对/答错/作答中/未做"标记状态。</li>
+      <li><strong>单题作答页</strong>：支持单选、多选、填空三种题型；选项点击或文本输入 → 提交 → 后台判错 → 查看解析 → 重置。解析区展示由 AI 双模型比对生成的题目解析。</li>
+      <li><strong>诊断报告页</strong>（模拟测试后）：以红绿标记薄弱与已掌握知识点及正确率，提供"去练习"入口直达薄弱知识点题集，实现"诊断 → 补漏"闭环。</li>
+    </ol>
+    <p>主交互链路：<strong>点击知识点 → 题集列表 → 点击单题作答 → 提交判错 → 查看解析/重置</strong>。</p>
+
+    <h2 id="section-5-3">5.3 视觉风格</h2>
+    <p>采用暖灰纸底、青绿主色、朱红警示色的设计语言，衬线体大标题搭配无衬线正文，刻意避开蓝紫渐变、毛玻璃等通用化后台模板观感，突出"学习工具"的克制气质。移动优先、兼顾后续小程序适配。</p>
+
+    <h1 id="section-6">六、题库接口与抽题规则</h1>
+    <ul>
+      <li><strong>按知识点提取</strong>：依据知识点树状结构，按知识点逐个抽题形成题集页面。</li>
+      <li><strong>按比例随机组卷</strong>：依据考纲要求的分数比例，从数据库随机抽题生成模拟卷。</li>
+      <li><strong>标准答案</strong>：所有题目须有明确答案，支持自动判分与即时查看。</li>
+      <li><strong>题目不足时的补充</strong>：当题库题目用完，可通过 AI 生成新题补充；若用户对 AI 答案有异议，后续安排专人提供人工服务。</li>
+    </ul>
+
+    <h1 id="section-7">七、AI 接口与题目解析</h1>
+    <ul>
+      <li>对接 <strong>DeepSeek</strong> 与<strong>豆包</strong>两个大模型的 Prompt 接口：提交题目，获取正确答案与解析。</li>
+      <li>针对原题库"有答案无解析"的问题，通过<strong>双模型交叉验证</strong>完善解析——例如两模型均选 A 才采纳；并把两份答案解析做比较，是否一致，以此提升答案与解析的可靠性。</li>
+      <li>无需自研 AI 算法。前端只负责把接口返回的 <code>analysis</code> 字段展示出来。</li>
+    </ul>
+
+    <h1 id="section-8">八、前后端接口数据约定（建议）</h1>
+    <p>为避免联调扯皮，建议先把以下 JSON 结构定死，后端按此返回、前端按此渲染：</p>
+    <ol>
+      <li><strong>知识树</strong>：<code>{ id, name, parent_id, progress, status }</code>，其中 status 取 <code>mastered / weak / learning / untouched</code>。</li>
+      <li><strong>题集条目</strong>：<code>{ id, stem, type, status }</code>，type 取 <code>single / multiple / blank</code>。</li>
+      <li><strong>单题详情</strong>：<code>{ id, stem, type, options: [{key, text}], answer, analysis }</code>；填空题 options 为空，answer 可为字符串或多选数组。</li>
+      <li><strong>提交判分</strong>：请求 <code>{ questionId, userAnswer }</code>，返回 <code>{ correct, analysis }</code>。</li>
+    </ol>
+    <p>接口就绪前，前端以本地 mock 数据开发，视图层无需改动即可切换真实接口。</p>
+
+    <h1 id="section-9">九、开发阶段规划</h1>
+    <table class="data">
+      <thead><tr><th>阶段</th><th>交付内容</th><th>说明</th></tr></thead>
+      <tbody>
+      <tr><td>阶段一</td><td>知识地图 + 题集列表 + 单题作答</td><td>用 mock 数据跑通"点节点→做题→判分→看解析"主链路，可先向老师演示、验证视觉方向</td></tr>
+      <tr><td>阶段二</td><td>接后端真实接口 + 进度/掌握度回写 + 模拟组卷页</td><td>打通前后端，实现真实数据流转</td></tr>
+      <tr><td>阶段三</td><td>诊断报告 + 红绿薄弱点 + 薄弱点一键补漏</td><td>完善"诊断→补漏"闭环</td></tr>
+      <tr><td>阶段四</td><td>小程序版</td><td>网页版稳定后再启动</td></tr>
+      </tbody>
+    </table>
+
+    <h1 id="section-10">十、待确认事项与风险</h1>
+    <ol>
+      <li><strong>题型数量（重要）</strong>：三种（单选/多选/填空）还是两类（选择/填空）？影响选项组件与判分逻辑，须优先确认。</li>
+      <li><strong>知识点标记分工</strong>：现有题目知识点字段空出后，由谁用思维导图统一标记？需明确负责人与时间。</li>
+      <li><strong>考纲资料采购</strong>：专升本三年制计算机考纲及复习资料由小唐采购（待办中写明"明天去闲鱼购买"），到货后据此更新题库与组卷比例。</li>
+      <li><strong>会议纪要工具</strong>：待办中提到"使用元宝 App 自动开启纪要记录""整理确认腾讯会议自带纪要功能"，属会务事项，与开发并行。</li>
+      <li><strong>前端范围</strong>：登录、个人信息、做题记录按会议要求暂缓，若后续需要须另行排期。</li>
+    </ol>
+
+    <p class="note">请团队重点确认第一章至第四章的业务口径与第十章的待确认事项。确认无误后，按三大模块分工进入开发。</p>
+  </section>
+
+</body>
+</html>

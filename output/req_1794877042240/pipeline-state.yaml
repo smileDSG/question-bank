@@ -1,0 +1,55 @@
+schema_version: 1
+request_id: req_1794877042240
+created_at: "2026-11-17T00:57:22Z"
+updated_at: "2026-11-17T00:57:22Z"
+
+entry_type: full_pipeline
+stage_chain: [1, 2, 3]
+
+output_docx_path: "E:\\03_Projects\\question bank\\output\\req_1794877042240\\stage3\\前端设计与对接文档.docx"
+output_docx_user_specified: false
+
+current_stage: completed
+
+stages:
+  stage_0:
+    status: completed
+    completed_at: "2026-11-17T00:57:22Z"
+    decision: full_pipeline
+  stage_1:
+    status: completed
+    started_at: "2026-11-17T00:57:22Z"
+    completed_at: "2026-11-17T00:58:30Z"
+    output_path: "stage1/final_draft.md"
+    genre: general
+    expert_used: general-writer
+    route_tag: general_writing
+  stage_2:
+    status: completed
+    started_at: "2026-11-17T00:58:30Z"
+    completed_at: "2026-11-17T01:00:00Z"
+    route: html
+    html_sub: template
+    output_path: "stage2/formatted-前端设计与对接文档.html"
+    output_format: html
+    skills_invoked: [design-token, doc-typeset, html-review]
+    design_tokens_path: null
+    fallback: false
+    fallback_reason: null
+  stage_3:
+    status: completed
+    started_at: "2026-11-17T01:00:00Z"
+    completed_at: "2026-11-17T01:01:00Z"
+    executor: doc-converter
+    input_format: html
+    output_path: "E:\\03_Projects\\question bank\\output\\req_1794877042240\\stage3\\前端设计与对接文档.docx"
+    skill_used: ["html-to-doc"]
+    present_files_opened: true
+    fallback: false
+    fallback_reason: null
+
+consistency_check:
+  output_files_exist: pass
+  stage_chain_complete: pass
+  last_checked_at: "2026-11-17T01:01:00Z"
+  errors: []

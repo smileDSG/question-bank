@@ -1,0 +1,165 @@
+/* ============ 知题 · 全局设计系统 ============
+   设计语言：暖灰纸底 + 青绿主色 + 朱红警示
+   刻意避开蓝紫渐变、毛玻璃、万物皆卡片等通用 AI 审美 */
+
+:root {
+  /* 色彩 token */
+  --paper: #f7f6f2;        /* 暖灰纸底 */
+  --paper-2: #efeee8;      /* 深一档纸色 */
+  --surface: #ffffff;      /* 卡片面 */
+  --ink: #2c2c2a;          /* 主文字 近黑 */
+  --ink-2: #5f5e5a;        /* 次要文字 */
+  --ink-3: #888780;        /* 弱文字 */
+  --line: #e3e1d8;         /* 分隔线 */
+  --line-2: #d3d1c7;       /* 稍重的线 */
+
+  --jade: #0f6e56;         /* 主色 深青绿 */
+  --jade-2: #1d9e75;       /* 亮青绿 */
+  --jade-soft: #e1f5ee;    /* 青绿浅底 */
+  --jade-line: #9fe1cb;    /* 树连接线浅青绿 */
+  --coral: #d85a30;        /* 警示 朱红 */
+  --coral-dark: #993c1d;
+  --coral-soft: #faecE7;   /* 朱红浅底 */
+
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  /* 字体：衬线与无衬线混排，制造编辑感 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-serif: "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* 通用容器 */
+.page {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 32px 28px 64px;
+}
+
+/* 页面标题：衬线大字 +  eyebrow 小标，避免通用后台风 */
+.page-head { margin-bottom: 28px; }
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--jade);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.page-title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+}
+.page-sub {
+  color: var(--ink-2);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* 卡片：白面 + 极细边，不用阴影堆叠 */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* 徽章 */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 9px;
+  border-radius: 99px;
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+}
+.badge-jade { background: var(--jade-soft); border-color: var(--jade-2); color: var(--jade); }
+.badge-coral { background: var(--coral-soft); border-color: var(--coral); color: var(--coral-dark); }
+
+/* 按钮 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.btn:hover { border-color: var(--ink-3); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--jade); border-color: var(--jade); color: #fff; }
+.btn-primary:hover { background: #0c5c48; border-color: #0c5c48; }
+.btn-coral { background: var(--coral); border-color: var(--coral); color: #fff; }
+.btn-coral:hover { background: var(--coral-dark); border-color: var(--coral-dark); }
+.btn-ghost { background: transparent; }
+
+/* 顶部导航 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(247, 246, 242, 0.92);
+  backdrop-filter: saturate(1.2) blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 28px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: var(--jade);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 17px;
+}
+.brand-name { font-family: var(--font-serif); font-size: 19px; font-weight: 700; letter-spacing: 0.04em; }
+.brand-tag { font-size: 10px; color: var(--ink-3); letter-spacing: 0.1em; margin-left: 2px; }
+.nav { display: flex; gap: 4px; margin-left: auto; }
+.nav a {
+  font-size: 13px;
+  color: var(--ink-2);
+  padding: 7px 14px;
+  border-radius: 8px;
+  transition: background .18s ease, color .18s ease;
+}
+.nav a:hover { background: var(--paper-2); color: var(--ink); }
+.nav a.active { background: var(--jade-soft); color: var(--jade); font-weight: 600; }
+
+/* 淡入动效 */
+.fade-enter-active { transition: opacity .28s ease, transform .28s ease; }
+.fade-enter-from { opacity: 0; transform: translateY(8px); }

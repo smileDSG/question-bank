@@ -1,0 +1,19 @@
+{
+  "genre": "business-report",
+  "theme": "business-modern-blacktext",
+  "note": "用户全局规矩：所有文字一律黑色 RGB(0,0,0)，含标题样式本身；禁用任何蓝色。",
+  "typography": {
+    "fontFamily-heading": "黑体, SimHei, sans-serif",
+    "fontFamily-body": "宋体, SimSun, serif",
+    "fontSize-h1": "20pt",
+    "fontSize-h2": "14pt",
+    "fontSize-body": "12pt"
+  },
+  "color": {
+    "text": "#000000",
+    "heading": "#000000",
+    "bg": "#ffffff",
+    "line": "#999999",
+    "fill": "#f2f2f2"
+  }
+}
